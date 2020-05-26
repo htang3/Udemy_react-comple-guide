@@ -3,6 +3,10 @@ import React, { Component } from 'react';
 import './App.css';
 import Persons from '../components/Persons/Persons'
 import Cockpit from '../components/Cockpit/Cockpit'
+import Auxilliary from '../hoc/Auxilliary'
+import withClass from '../hoc/withClass'
+import PropTypes from 'prop-types'
+
 class App extends Component {
   constructor(props) {
     super(props);
@@ -17,7 +21,8 @@ class App extends Component {
     ],
     otherState: 'some other value',
     showPersons: false,
-    showCockpit: true
+    showCockpit: true,
+    changeCounter: 0
   }
 
   static getDerivedStateFromProps(props, state) {
@@ -63,7 +68,12 @@ class App extends Component {
     const persons = [...this.state.persons];
     persons[personIndex] = person;
 
-    this.setState({ persons: persons });
+    this.setState((prevState, props) => {
+      return {
+        persons: persons,
+        changeCounter: prevState.changeCounter + 1
+      }
+    });
   };
 
   deletePersonHandler = personIndex => {
@@ -89,7 +99,7 @@ class App extends Component {
     }
 
     return (
-      <div className="App">
+      <Auxilliary>
         <button onClick={() => {
           this.setState({
             showCockpit: false,
@@ -102,11 +112,13 @@ class App extends Component {
             togglePerson={this.togglePersonsHandler}
           /> : null}
         {persons}
-      </div>
+      </Auxilliary>
+
+
     );
     // return React.createElement('div', {className: 'App'}, React.createElement('h1', null, 'Does this work now?'));
   }
 }
 
 
-export default App;
+export default withClass(App, "App");
