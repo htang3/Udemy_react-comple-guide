@@ -1,0 +1,988 @@
+2. What is React?
+A JS library for building User Interfaces. It runs in the browser.
+React is about building components. A webpage can have header component, sidebar component, headline component.
+4. Real-World SPA & React Web Apps
+components update and maintain the state of component.
+6.Why React?
+UI State becomes difficult to handle with Vanila JS.
+Focus on Business Logic, not on preventing your App from exploding.
+Huge Ecosystem, Active Community.
+
+7. SPA and Multi page application.
+SPA: only one HTML, Content is rerender on Client.
+MPA: multiple HTML Pages, Content is renderred on Server.
+
+9. Course Outline
+BASICS -> Debugging- Styling-> COMPONENT DEEP DIVE -> HTTP REQUESTs - > ROUTING -> 
+FORMS VALIDATION -> REDUX -> Authentication -> Testing Intro -> Deployment -> bonus.
+
+SECTION2: REFRESHING NEXT GENERATION JS (OPTIONAL)******************************
+13. Understanding "let" and "const"
+var: does not provide scoping block
+let: variable values.
+const: constant values.
+14. Arrow Functions: 
+(x,y) => x+y;
+const myFnc = (name) => {
+    console.log(name)
+}
+myFnc('name')
+const multiply = (number) => {
+    return number *2
+}
+15. Exports & Imports (Modules)
+const person ={
+    name: "max"
+}
+export default person
+import person from'./person.js' 
+
+utility.js
+export const baseData = 10;
+import {baseData} from './utility.js' // exact name of variable.
+
+import * as bundled from './utility.js' //multiple element
+
+16. Classes: blueprint of object
+const myPerson = new Person()
+class Person extends master.
+class Person {
+  constructor(){
+    this.name = "Max";
+  }
+  function printMyname(){
+    console.log(this.name)
+  }
+}
+const person = new Person();
+person.printMyName();
+
+17. Classes, Properties and Methods.
+constructor(){
+    this.myProperty = 'value'
+}
+# ES6
+myProperty = 'value' //gender = 'male'
+myMethod =()=> {...} //printGender =()=> {console.log(this.gender)}
+
+18. The Spread & Rest Operator: ...
+Spread: split up array element or object property.
+const newArr = [...oldArr, 1,2]
+const newObj = {...oldObj, newProp: 5}
+Example:
+const numbers = [1,2,3];
+const newNumbers = [...numbers,4];
+console.log(newNembers) // [1,2,3,4]
+const person = {
+    name: 'Max'
+};
+const newPerson ={
+    ...person,
+    age: 29
+}
+**************
+Rest: merge a list of funtion arguments into an array.
+function sortArg(...args){
+    return args.sort()
+}
+Example:
+const filter =(...args) => {
+    return args.filter(el => el === 1) // if el ==1
+}
+
+19. Destructuring: Easily extract SINGLE array elements or SINGLE object properties and store them in variables.
+[a,b]=['Hello','Max']
+console.log(a)//Hello
+console.log(b)//Max
+Example: const numbers = [1,2,3];
+[num1, num2] = numbers;
+console.log(num1, num2) //1, 2
+
+20. Reference and Primitive Types Refresher.
+const number =1;
+const num2 = number;
+clg(num2) //1
+
+const person = {
+    name: 'Max'
+};
+clg(secondPerson) //Max
+const secondPerson = person;
+person.name = 'Manu';
+clg(secondPerson); //Manu because the pointer, value change
+However if we do spread operator.
+const secondPerson = {
+    ...person //this will make a real copy(property and value), so when the original person changes, secondPerson not change
+}
+clg(secondPerson) //Max
+
+21. Array Functions (MAP)
+const numebrs = [1,2,3];
+const doubleNumberArray = numbers.map((el)=> {
+    return el*2;
+})
+
+23. Next Gen JS (BACK HERE TO REVIEW).
+
+SECTION 3: UNDERSTANDING THE BASE FEATURES & SYNTAX********************************
+25. Module Introduction.
+26. The Build Workflow
+Set up local project: optimize code, use next-gen JS Features, be more productive.
+How?  Use Dependency Management NPM, Use a Bundler: Webpack. Use Babel + Presets, use dev server.
+
+27. Using create-react-app
+npx create-react-app nameofapp
+cd nameofapp
+npm start
+
+28. Understand folder structure.
+manifest.json to declare metadata.
+index.js get accessed to the root in html.
+it renders App.js 
+registereServiceWorker.js precache our app.
+
+29. Understanding Component Basics.
+React is all about creating component, custom HTML.
+index.js render one root component (App),
+render some html, components.
+App.js, have to return JSX (looks like HTML). 
+
+30. Understand JSX: a syntax extension to JS. We use JSX with React to describe what the UI should look like. 
+App.js: 
+// return (
+    //   <div className="App">
+    //     <h1>Hi , I am a react app</h1>
+    //   </div>
+    // );
+    return React.createElement('div', { className: 'App' }, React.createElement('h1', null, 'I\' m a React App'));
+31. JSX restriction
+cannot use class =>className
+className attribute.
+When returns something, JSX had to have only one root element.
+
+32. Create functional components.
+create functional component Person.js, export default Person
+in App.js import Person from './Person/Person'
+<Person/>
+
+33.Components & JSX Cheat Sheet
+Component are core bulding block of React application.
+ A component need to return some JSX code. 
+ A component tree has a root component('App') and
+  then an infinite amount of nested child component.
+There are two type of components: functional component(stateless) and class-based component(stateful).
+components can be reusable and easy to maintain. 
+
+a syntax extension to JS. We use JSX with React to describe what the UI should look like. 
+JSX is NOT HTML, but it looks a lot like HTML. 
+JSX allow dev to write code look like HTML,
+instead of nested React.createElement call.
+
+34. Working with Components&Reuse them.
+Component allows user to write separate logic for application.
+We can reuse components, and config.
+should output different things depends on the state of the applicaition.
+
+35. OUtputing Dynamic Content
+App.js
+add attribute name and age in Person Component
+Person.js passed props in param, then return I am {props.name} and {props.age}
+
+36. Working with props******
+props is an object with all properties we add into the component. 
+When using class components, it's this.props
+class Person extends Component {
+    render(){
+        return <p>My name is {this.props}</p>
+    }
+}
+37. Understanding the "children" of Prop.
+use prop.children to execute <tag>SOmething in between</tag>
+
+38. Understanding and Using State. 
+cannot define state in functional component.
+state: managed inside a component, only available in class based component.
+We should use state with care.
+if state change, it will lead React Rerender.
+App.js before render()
+  state = {
+    persons: [
+      { name: 'Hung', age: 26 },
+      { name: 'Eta', age: 29 },
+    ]
+  }
+<Person name={this.state.persons[0].name} age={this.state.persons[0].age} />
+"this" refers to the class.
+
+39. Props & State 
+props  and state  are CORE concepts of React.
+ Actually, only changes in props  and/ or state  
+trigger React to re-render your components and potentially update 
+the DOM in the browser (a detailed look at how React checks whether 
+  to really touch the real DOM is provided in section 6).
+
+Props
+
+props  allow you to pass data from a parent (wrapping) component to a child (embedded) component.
+State: Whilst props allow you to pass data down the component tree (and hence trigger an UI update), 
+state is used to change the component, well, state from within. 
+Changes to state also trigger an UI update.
+40. Handling Events with Methods
+<button onClick={this.switchNameHandler}>Switch Name</button>
+only passing the reference switchNameHandler NOT switchNameHandler().
+41. To Which Event can you listen?
+https://reactjs.org/docs/events.html#supported-events
+
+42. Manipulating the State
+if state change or prop change, React re render and update DOM. 
+App.js, switchNameHandler
+this.setState({
+      persons: [
+        { name: 'Hung', age: 28 },
+        { name: 'Eta', age: 29 },
+      ]
+    })
+44. Using the useState() Hook for State Manipulation.
+use React Hook for functional component. 
+useState is one of the most popular state allow us to manage state in functional component.
+useState returns an array with exactly two elements.
+the first element we can back is always our current state
+the second element in our state will always a function allows us to update state.
+const [personsState, setPersonsState] = useState({
+    persons: [
+      { name: 'Hung', age: 26 },
+      { name: 'Eta', age: 29 },
+    ],
+    otherState: "some other",
+  });
+  const switchNameHandler = () => {
+    //console.log("was clicked");
+    //this.setState leave otherState untouched.
+    setPersonsState({
+      persons: [
+        { name: 'Hung', age: 28 },
+        { name: 'Eta', age: 29 },
+      ]
+    })
+  }
+  <button onClick={switchNameHandler}>Switch Name</button>
+      <h1>Hi , I am a react app</h1>
+       <Person name={personsState.persons[0].name} age={personsState.persons[0].age} />
+
+When we use Hooks, the second element will not merge the old state, it will replace the old states.
+We have to manually ensure to include the old state.
+this is the different from this.setState where it automatically merge the old state with new state.
+To Avoid merge state manually, we can useState multiple time. 
+We can use state for OtherState
+
+5/21/2020
+45. Stateless and Stateful Components
+A stateful comp is a component that manage state. Called smart, container component. 
+A stateless have no state Management, presentational comp, have more stateless compnent.
+Because it make app easily to maintain and manage, clear flow of data. we know where main logic sit.
+
+46. Passing Method Reference between Components
+Idea: passing switchNameHandler reference when clicking any paragraph in Person compnent.
+App.js in one of the <Person> add click ={this.switchNameHandler}, in Person.js onClick={props.click}
+For binding.
+suppose in switchNameHandler = (newAge) => {
+  persons: {
+    [name: 'Hung', age: newAge]
+  }
+}
+ <button onClick={this.switchNameHandler.bind(this, 100)}>Switch Name</button>
+  click={this.switchNameHandler.bind(this, 26)} /> //when clicked the person, it change value.
+
+47. Add Two way binding.
+What if we want to change the name on our own 
+in Personjs: add  <input type="text" onChange={props.changed} value={props.name} />
+value is the current value of that person, changed is property of Person, refers to nameChangeHandler.
+OnChange will be fired when input change.
+App.js add nameChangeHandler, in second person at changed={this.nameChangeHandler}
+
+48, 49. Style and inline styles.
+50. Assignment solution
+
+SECTION 4: WORKING WITH LISTS AND CONDITIONS ************************************************************
+52. Module Introduction:
+output content conditionally.
+output list of data.
+53. Render content conditionally
+show or hide person : togglePerson
+add ternary expression
+add togglePerson method, add the method to the button "switch name",
+in the state, add showPerson : false.
+in toggle method, set doesShow: this.state.showPerson, then we setState showPerson: !doesShow.
+{
+  this.state.showPerson? then: else
+}
+it may confusing JSX if we have multiple condition
+
+54. Handling Dynamic Content "The JS Way"
+When react render something to the screen, it executes this render method and not just the return expression.
+we can add code in render
+in render(){
+  let persons = null
+  if (this.state.showPerson){
+    persons =(
+      <div><Person/></div>
+    )
+  }
+}
+in return(){
+  below <button>
+  {persons}//this persons refers to line 320
+}
+
+55. Outputting LISTS
+we hard code the <Person>, we not output it dynamically. 
+we got an array of person, interact array.
+
+56. Outputting Lists **
+this.state.persons.map execute on every element of the array
+if (this.state.showPerson) {
+      persons = (
+        <div>
+          {this.state.persons.map(p => {
+            return <Person
+              name={p.name}
+              age={p.age}
+            />
+          })}
+        </div>
+      );
+    }
+57. Lists & State: deletePersonHandler.
+to manuplate the person array, add click listener
+to delete a specified person, add index of the array
+deletePersonHandler = (personIndex)=>{
+  const persons = [...this.state.persons]
+  persons.splice(personIndex,1)
+  this.setState({
+    persons: persons
+  })
+}
+
+58. Updating State Immutably
+in JS, object and array are reference types, if we change the original data directly, we mutates the data.
+Hence, we need to fully copy the persons array using spread operator.
+[...this.state.persons]
+then we update the state of persons with the new state of persons.
+SHOULD UPDATE STATE IMMUTABLE FASHIONS.
+
+59. Lists and Keys
+key prop help react update efficiently.
+React have virtual DOM, what need to render, what element changes. 
+keep track on individual property, only render the element that changes not the whole lists.
+add    key={p.id} in the return <Person>
+
+60. Flexible Lists: onChange, nameChangeHandler, Update Operation
+ changed={(event) => this.nameChangeHandler(event, p.id)
+nameChangeHandler =(event, id)=>{
+  //first find the index by using findIndex
+  const personindex = this.state.persons.findIndex( p =>{
+    return p.id ==id;
+  })
+  //extract the person with correct id
+  const person = {...this.state.persons[personindex]}
+  //set the name to the new input value.
+  person.name = event.target.value;
+  //update that persons array
+  const persons = [...this.state.persons];
+  persons[personIndex]= person;
+  this.setState({
+    persons: persons
+  })
+}
+
+61. Wrap up
+62. Useful Resource
+Conditional Rendering: https://reactjs.org/docs/conditional-rendering.html
+Lists & Keys: https://reactjs.org/docs/lists-and-keys.html
+
+SECTION 5: STYLING REACT COMPONENTS & elements
+64. Module Intro
+65. Outlining the Problem Set
+66. Setting Styles Dynamically(Conditionally).
+IN the if statement after render list of person, set button color to red 
+style.backgroundColor = 'red';
+67. Setting Class Names Dynamically
+set the <p> This is working dynamically
+in App.css 
+add .red{color: red}, .bold{font-weight: bold}
+
+AFTER if statement: let classes = ['red','bold'].join(' ');
+in return()
+<p className={classes}>
+ OR WE SET CONDTION FOR Style, AFTER IF person list
+  let classes = [];
+    // add some condition to the claseses style
+    if (this.state.persons.length <= 2) {
+      classes.push('red'); //classes = ['red']
+    }
+    if (this.state.persons.length <= 1) {
+      classes.push('bold') //classes = ['red',bold]
+    }
+
+return () <p className={classes}> => <p className={classes.join(' ')}>
+
+68. Adding Radium
+we cannot add Hover, we need to use pseudo selector, and media query.
+install new package npm install --save Radium
+import Radium from 'radium'
+export default Radium(App), SAME for Radium(Person)
+HOC: higher order component wrap other component and add some extra functionality
+":hover" is pseudo selector
+":hover": { //obj
+  backgroundColor:'lightgreen',
+  color: black
+}
+
+5/22/2020
+
+69. Using Radium for Media Query
+Person.js
+ const style = {
+        '@media (min-width: 500px)': {
+            width: '450px'
+        }
+    };
+    return (
+        <div className="Person" style={style}>
+App.js: import StyleRoot from radium
+return (
+  <StyleRoot>
+    <div>
+  </StyleRoot>
+)
+
+
+70. Introdocing Styled Component
+styled cmpnent library. in styled component.com
+Person.js
+import styled from'styled-components'
+const StyledDiv = styled.div`
+    *add regular css here*
+`
+in return statement,
+return (
+  <StyledDiv> replace <div>
+)
+
+71. More on Styled Components
+similar to Person.js, in App.js
+import styled from 'styled-components'
+
+const StyledButton = styled.button`
+  background-color: green;
+      color: white;
+      border: 1x solid blue;
+      padding: 8px;
+      cursor: pointer;
+      &:hover: {
+        backgroundColor: lightgreen;
+        color: black;
+`;
+replace <button> with StyledButton
+
+72. Styled Components & Dynamically Components
+in StyleButton add alt propertey
+in backgroundColor: ${props.alt? red : green}
+
+73. CSS Modules
+first revert everything, remove Radium and styled-component related.
+run "npm run eject ", restart the project.
+in config/webpack.config.dev and ..prod
+add these two line in test: /\.css
+  modules: true,
+  localIdentName: '[name]__[local]__[hash:based64:5]'
+74. CSS modules & Media Queries
+DOES NOT WORK, DELETE PROJECT, CLONE THE GITHUB
+REVERT BACK TO TRADITIONAL CSS
+
+SECTION6: DEBUGGING REACT Apps*************************************
+77. Intro.
+78. Understanding error message
+suppose in nameChangeHandler, replace event.target.value with event.input.value
+
+79. Finding Logical Error
+npm start, open console, open source, set the breakpoint
+go back to program, perform the functionality,
+step into the function we suspect
+
+80. React Developer Tools
+in console developer Tools, navigate to Components and play around with it
+
+81. Using Error Boundary (React 16+)
+use ErrorBoundary when we know we have some code that may fail
+Create ErrorBoundary folder, add ErrorBoundary.js
+import React, { Component } from 'react';
+class ErrorBoundary extends Component {
+    state = {
+        hasError: false,
+        errorMessage: ''
+    }
+    componentDidCatch = (error, info) => {
+        this.setState({
+            hasError: true,
+            errorMessage: error
+        })
+    }
+    render() {
+        if (this.state.hasError) {
+            return <h1>this.state.errorMessage</h1>
+        }
+        else {
+            // props.children is wrapped inside ErrorBoundary
+            return this.props.children
+        }
+    }
+}
+
+export default ErrorBoundary;
+
+Then wrap the piece of returning JSX with ErrorBoundary Component.
+DELETE ErrorBoundary before move on
+5/23/2020
+SECTION7: DIVING DEEPER INTO COMPONENTS & REACT INTERNALS
+84. Intro: Dive deep to the components.
+85. Better Project structure
+What should go to its own component?
+create components folder, Cockpit folder, Persons folder, containers and assets folder.
+fix all the import in App.js and index.js
+86. Split an App.js into Components
+first move the persons.map(p=>{}) into persons.js
+using props.persons, replace this.method with props.methodRef.
+import persons into App.js
+now perons =<Persons methodRef={this.method}>
+
+Same for Cockpit.js
+return <div> h1, button here> and the condition for h1
+App.js import Cockpit, <Cockpit persons={this.state.persons} methodRef={this.method}>
+
+87. Compare Stateless and Stateful Components.
+Stateful: when we can manage state, setState, functional component can become stateful in 16.8 useHook.
+Stateless: functional componenet, presentational compoent, before 16.8.
+more stateless compoent, less stateful component b/c split the app, keep the app manageable, we know where state change.
+ensure the compnent is highly predictable. 
+
+88.Class-based vs Funtional Component
+Class-based Component:
+class XYZ extends Component, Access to Stae, Lifecycle
+access state and props via "this", this.state.XY & this.props.XY
+=> use if need to manage State or access Life Cycle hook and you don't want to use Hook
+Functional Component: 
+const XYZ = props =>{}, access to State(useState()), NO life cycle.
+props.XY.
+=> use functional compnent for other case.
+
+WAY TO DO this.props, 
+in index.js, <App appTitle= "Persons">
+in App.js, <Cockpit title={this.props.appTitle}>
+in Cockpit.js < h1 >{props.title}
+
+89.Class Component Life Cycle(CLC): Only avaiable in Class-based cycle,
+CLC render some data from web or clean data before it unmounts form DOM.
+in Creattion: first, constructor(props) execute, call super(props)
+set initial state. no action here.
+getDerivedStateFromProps: whenever props change, we can sync internal state after compoennt chage, no action.
+render(): prepare & structure, return JSX, no http requrest.
+Render Child Components
+componentDidMount: can do action, http request, no update the setState here (bad for performance).
+
+90. Component life cycle in action
+constructor(props){
+  super(props);
+  this.state = {
+
+  }
+}
+Early, we only call state ={ this is modern JS syntax}
+we add getDerivedStateFromProps(props,state) {
+  clg('getDerivedStateFromProps', props)
+  return newState;
+}
+render(
+  clg('render method execute')
+)
+componentDidMount(){
+  clg("componentDidMount executes")
+}
+add clg to Persons.js and Person.js
+
+NOW accessing the render method by the way does not mean that the real DOM gets re-rendered,
+it simple means that React will now re-render its internal virtual DOM and then check if the real DOM
+needs to be cahnged.
+
+91. Component Update Lifecycle(CUL for props change): UPDATE
+when props or state change, trigger update, different life cycle
+getDerivedStateFromProps(props, state) (Do sync state to Props, DON"T do http request)
+=> Creation of state only
+***shouldComponentUpdate(nextProps, nextState) (Decide whether update or not the state, optimization purpose)
+=> Cancel updating process, whether to update the component, prevent unnecessary cycle.
+be careful, may block components update correctly. RETURN TRUE OR FALSE
+render() =>  prepare structure jSx
+update Children Component Props
+**getSnapshotBeforeUpdate(prevProps, prevState) takes a snapshot of object state before updating happen.
+=>use for last-minute DOM op, No http request or API. Return a snapshot
+**ComponentDidUpdate() (can make http requrest, avoid infinite loops) now done with update.
+=> DON"T update state with setState." promise, callback here. unnecessary re rendering.
+can call http requrests.
+
+1st, convert person and persons to class based component
+render(){}
+replace props with this.props key
+export class Persons
+in Persons.js
+add getDerivedStateFromProps(props,state)=> return state.
+add shouldComponentUpdate(nextProps,nextState) =>compare currProps vs nextProps 
+return T or F
+add getSnapshotBeforeUpdate(prevProps,prevState) => return null
+add ComponentDidUpdate(){//will run when we done with other}
+
+92. Update Lifecycle(state Changes)
+App.js
+ shouldComponentUpdate(nextProps, nextState) {
+    console.log("app.js SHould component update");
+    return true;
+  }
+  render() run in between in console
+  /**
+   * componentDidUpdate() is invoked immediately after updating occurs. 
+   * This method is not called for the initial render.
+   * goodplace for http requrest
+   */
+  componentDidUpdate() {
+    console.log("app.js Component did update");
+  }
+
+  After shouldComponentUpdate, it will render the Persons.js life cycle, after it finishes, 
+  app.js call componentDidUpdate
+
+93. Using useEffect for Functional Component
+useEffect: tell React that compnent needs to do something after render. React will call it after dom update.
+useEffect run after every render, happen "after render."
+Cockpit.js
+ useEffect(() => {
+        console.log("cockpit.js useEffect");
+        //send http request... componentdidmount and componentdidupdated combined in one effect
+    });
+94. Controlling useEffect() behavior
+  useEffect(() => {
+        console.log("cockpit.js useEffect");
+        //send http request... componentdidmount and componentdidupdated combined in one effect
+        setTimeout(() => {
+            alert("effect")
+        }, 1000)
+    }, []);
+ADD a parameter as a second arguments into useEffect. It help control the when useEffect execute
+Example: [], useEffect will only execute once in the first life cycle,
+[props.persons], useEffect will execute once the state of persons changes.
+
+95. Clean up work with useEffect
+add return() after setTimeout
+then add another useEffect after the first useEffect, return the message "2nd clean up"
+
+96. Cleanup Work with useEffect() - Example
+When we remove the cockpit, the alert still show again, we need to fix setTimeout,
+add a variable = setTimeout
+in the following return statement,
+we clearTimeout(variable)
+by doing this, we will stop the alert happen again after we delete cockpit.
+
+97. Using shouldComponentUpdate for Optimization (Persons.js): for Performance purpose
+in Persons.js, shouldComponentUpdate rerender everytime SOMETHING change, even persons does not change.
+we want it execute only when Persons change.
+if (nextProps.persons !== this.props.persons) {
+            return true; //if it continues updating, else stop
+        }
+        else {
+            return false;
+        }
+WHen cockpit removed, it does not affect the Persons.js
+refernece type are store in memory. the array and object in code, is actually pointer.
+App.js, nameChangeHandler if don't copy persons, it still the same pointer point to the persons array.
+if we dont'updaate, copy it correctly, 
+when compare (nextProps.persons !== this.props.persons) should give a problem becase persons is not updated correctly.
+
+in console, click on ... vertically, choose more tool => rendering=> pain flashing
+ It will highlight which compoennt rendering.
+ 
+98. Optimizing Functional Components with React.memo() (Cockpit.js)
+ optimize perfomance for functional components: cockpit.js, 
+ React.memo() store a snapshot of this component and 
+ only if its input changes, it will re-render it.
+export default React.memo(Cockpit);
+props.persons.length, optimize the way we pass the data. 
+in App.js, we <Cockpit personsLength ={this.state.persons.length}>
+in Cockpit.js, replace, props.persons.length with props.personsLength.
+Use React.memo() for optimization
+
+99. When should you optimize?
+shouldComponentUpdate, React.memo for optimization. 
+some component always update when their parent updates. the code in shouldComponentUpdate costs some kind of perfomance.
+sometimes it unnecessary. 
+
+100. PureComponent instead of shouldComponentUpdate.
+import PureComponent from React, 
+class Persons extends PureComponent
+then we don't need to worry about shouldComponentUpdate logic, just comment it out
+The PureComponent handle logic when a component need to update
+5/26/2020
+101. How React Updates the DOM
+shouldComponentUpdate to check if it should render or not.
+render() is called, does not render to the real DOM in Classes based comp.
+it compares the old virtual DOM vs Re-rendered Virtual DOM.
+REact keeps copy of both old and new virtual DOM.
+only update where the change happen.
+
+102. Rendering Adjacent JSX Elements 
+JSX element wrapped in a root div.
+in Persons.js return an array of element. 
+Person.js we only have 1 div, each element should have a key.
+we can return array of JSX
+return [
+  <p key="adf" />,
+  <p key="adfa" />,
+  <input key="a" />
+]
+Another way to render JSX elements using WRAPPING COMPONENT, HOC 
+
+Create hoc folder, auxilliary.js as functional component. 
+const auxilliary = props => props.children; //we only return one expression now.
+it is an empty wrapper using children property. 
+
+104. Using React.Fragment 
+since 16.2, there are built in HOC
+React.Fragment can be an alternative for auxilliary
+
+105. Higher Order Component (HOC) because it wraps another component. 
+may add some logic to it.
+hoc/WithClass.js for css module styling
+Create withclass.css with .App text-align center
+in return App.js replace the root div with <WithClass />
+const withClass = props => (
+
+    <div className="App">
+        {props.children}
+
+    </div>
+)
+106. Another form of hocs
+another way to perform HOC, we replace props with wrappedComponent
+we turn WithClass to withClass as a normal JS function 
+const withClass = (WrappedComponent, className) => {
+    //return functional component
+    return props => (
+        <div className={className}>
+            <WrappedComponent />
+        </div>
+    )
+}
+in App.js, replace WithClass with Auxilliary, then 
+export default withClass(App, "App") //"App" as a class name for styling
+
+107. Passing Unknown Props to WrappedComponent
+in Person.js, add withClass(Person, "Person").
+HOWEVER, when we did it, we lost the data because Person.js is a wrappedComponent now, 
+we need to find a way to pass name, age and other props.
+since withClass function return functional compoennt with props, 
+use spread operator with props
+<WrappedComponent {...props}>
+
+108. Setting State Correctly : only for class based compoennt
+add changeCounter in state;
+in nameChangeHandler, this.setState{
+  changeCounter: this.state.changeCounter +1
+}
+However, it's the wrong way to do it, behind the scene, setState does not immediately trigger and
+update of the state of this component in re-render cycle.
+
+setState also take in the arguments,
+ first one is old state, and props
+  this.setState((prevState, props) => {
+      return {
+        persons: persons,
+        changeCounter: prevState.changeCounter + 1;
+      }
+    });
+ use this way when we depend on the old state.
+
+ 109. using PropTypes: to specify the type of expected props.
+ npm install --save prop-types
+ Person.js
+ import PropTypes from 'prop-types'
+Person.propTypes = {
+  //set up key value name, key is props name
+  click: PropTypes.func,
+  name: PropTypes.string,
+  age: PropTypes.number,
+  changed: PropTypes.func
+}
+110. Using Refs: only work in class based component
+two way binding in input, suppose we want FOCus on input.
+Ref stand for reference, on any elements, we can add ref keyword.
+There are two way we can use ref
+1) set componentdidmount w/o the constructor
+componentDidMount(){
+// since the component did mount executed after render, input Element has been set by then
+    this.inputElement.focus();
+}
+...
+<input
+    ref={(inputEl) => {
+             this.inputElement = inputEl
+           }}
+>
+2) using React.createRef
+constructor(props){
+  super(props)
+  this.inputElementRef = React.createRef()
+}
+componentdidmount(){
+  this.inputElementRef.current.focus() //current is the current element
+}
+<input ref={this.inputElementRef}>
+
+111.Refs with React Hooks: functional Component
+Cockpit.js, let's say we want the button automatically clicked when the page loads
+1st, set reference 
+const toggleBtnRef = useRef
+toggleBtnRef.current.click() ***WILL GIVE UNDEFINED
+BECAUSE toggleBtnRef.current.click() executed before the return method,
+therefore, React return undefined.
+SOLUTION: put toggleBtnRef.current.click() into first useEffect
+comment out the setTimeout function.
+BEcause useEffect execute after return JSX executes.
+return(
+  <button
+    ref={toggleBtnRef} 
+  >
+)
+
+112. Understanding Prop Chain Problems
+avoid long chains of passing props around.
+Context was introduced by React and it helps us handle cases where you need
+a certain data, certain state, 
+add a button in Cockpit.js, onCLick={props.login}
+in app.js login={this.loginHandler} with the state authenticated:false.
+then passing the isAuthenticated to the <Persons> then to Person with condition {this.props.Auth}
+SOLUTION: Context API
+
+113.Using the Context API 
+create Context/authContext.js
+const  authContext = React.createContext({
+  authenticated: false,
+  login: () =>{}
+})
+//this is the inital value. 
+in App.js import AuthContext from 
+AuthContext should wrap the component that need to be wrapped,
+<AuthContext.Provider  value={{ authenticated: this.state.authenticated, 
+                                login: this.loginHandler }}> />
+
+<Cockpit> and <Persons> can now access the authenticated and login.
+
+in Person.js
+after <Auxilliary> 
+<AuthContext.Consumer> {
+  (context)=> context.authenticated ? <p>authenticated</p>: <p>Please log in</p>
+}
+<AuthContext.Consumer />
+in Cockpit.js
+ <AuthContext.Consumer>
+                {(context) =>
+                    <button
+                        className='red'
+                        onClick={context.login}>Login</button>
+
+                }
+
+            </AuthContext.Consumer>
+
+114. contentType and useContext() for functional component 
+in Person.js, what if we want to use context in ComponentDidMount because maybe sending HTTp requrest
+need authetication.
+React 16.6, add a static property contextType. static mean it can be accessed from outside w/o the need to instantiate object based on this class.
+static contextType = AuthContext; ********** //behind the scene React connect AuthContext component
+in componentDidMount()
+clg(this.context.authenticated) // this.context is accessed globally.
+in return (
+  replace <AuthContext.Consumer> with 
+  this.context.authenticated: true: false
+)
+The above new way is for class based Person.js only
+For functional component Cockpit.js, we useContext
+const authContext = useContext(AuthContext)
+reaplce <AuthContext.Consumer> with
+<button onClick={authContext.login}>
+=> useContext for functional class 
+and contextType is for class based.
+115. Wrap Up 
+
+SECTION8: A REAL APP: THE BURGET BUILDER(BASIC VERSION) ******************************************************
+
+
+
+SECTION 9: REACHING TO THE WEB (HTTP/AJAX) http_section folder ******************************************
+159. introduction 
+Send http to server.
+160. Understanding Http Requests in React(Typically)
+React => request to Server
+Server => some JSON data to React 
+Server typically is Restful API, exposing some API end points to which we can send or request data.
+161. Understanding project and introducting Axios
+use json place holder, a restful backend API. 
+install axios, not something connected to React. 
+npm install axios --save 
+
+162. Creating a Http Request to GET data 
+Where do we make http request? look at component life cycle in Creattion.
+ComponentDidMount(){
+  fetching new data, 
+  should NOT update State, becasue it will re render. 
+}
+get request is asynchronuos, it gets to the server to get data. 
+At the same time, JS keep executing. 
+axios use Promise, a default JS introduced in ES6
+componentDidMount() {
+        //then take a function as promise, when done get data from server
+        axios.get('https://jsonplaceholder.typicode.com/posts')
+            .then(response => {
+                console.log(response.data);
+            });
+
+
+    }
+163. Rendering Fetched Data to the Screen 
+add state = {
+  posts: []
+}
+in componentDidMount(){
+  axios.get("api endpoint")
+        .then(response => {
+          this.setState({posts: response.data})
+        })
+}
+in the render()
+  const posts = this.state.posts.map( p =>{
+    return <Post 
+            key={p.id}
+            title={p.title}
+           />
+  })
+  return (
+    {posts}
+  )
+  in Post.js {props.title}
+164. Transforming Data: Limit number of posts
+  .then(response => {
+      const posts = response.data.slice(0, 4)
+      const updatedPosts = posts.map(post => {
+          return {
+              ...post,
+              author: "Max"
+          }
+      })
+165. Make a post Selectable:
+click on one of the post and load data.
