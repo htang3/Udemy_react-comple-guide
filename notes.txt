@@ -985,4 +985,53 @@ in the render()
           }
       })
 165. Make a post Selectable:
-click on one of the post and load data.
+in Post.js add an onClick listener
+in Blog.js add to state selectedPostId: null
+in return JSX array of post add clicked={()=>this.postselectedHandler(post.id)}
+create postSelectedHandler and set id 
+set selectedPostId: id 
+in FullPost at id={this.state.selectedPostId}
+In FullPost.js, if (this.props.id){
+  post ( <div>)
+}
+166. Fetching data on update w/o creating infinite loop.
+componentDidUpdate() {
+  if (this.props.id) {
+      //make sure the newly loaded post is different from selectedPostid
+      //or either the loadedPost is not null
+      if (!this.state.loadedPost || (this.state.loadedPost && this.state.loadedPost.id !== this.props.id)) {
+          axios.get("http://jsonplaceholder.typicode.com/posts/" + this.props.id)
+              .then(response => {
+                  //when we call setState in componentDidUpdate, it creates an infinite loop.
+                  //therefore we want it only update when we load a new post, then how do we did that?
+                  this.setState({
+                      loadedPost: response.data
+                  })
+                  //console.log(response)
+              })
+      }
+  }
+}
+
+make sure loadedPost is not null
+
+167. POSTing Data to the Server 
+postDataHandler = () => {
+  const data = {
+      title: this.state.title,
+      body: this.state.content,
+      author: this.state.author
+  }
+  axios.post("https://jsonplaceholder.typicode.com/posts", data)
+      .then(response => {
+          console.log(response)
+      })
+}
+
+in the NewPost.js at post button, add onClick={this.postDataHandler}
+
+168. Sending a DELETE Request 
+in the FullPost.js
+add deletePostHandler
+170. Handling Errors Locally 
+in Blog.js axios.get, add .catch method after .then method. 

@@ -9,7 +9,9 @@ class Blog extends Component {
     constructor(props) {
         super(props)
         this.state = {
-            posts: []
+            posts: [],
+            selectedPostId: null,
+            error: false
         }
     }
     componentDidMount() {
@@ -27,23 +29,39 @@ class Blog extends Component {
                 })
                 console.log(updatedPosts)
             })
+            .catch(err => {
+                this.setState({
+                    error: true
+                })
+                console.log(err)
+            })
+    }
+    postSelectedhandler = (id) => {
+        this.setState({
+            selectedPostId: id
+        })
     }
 
     render() {
-        const posts = this.state.posts.map(post => {
-            return <Post
-                key={post.id}
-                title={post.title}
-                author={post.author}
-            />
-        })
+        let posts = <p style={{ textAlign: 'center' }}>Something went wrong</p>
+        if (!this.state.error) {
+
+            posts = this.state.posts.map(post => {
+                return <Post
+                    clicked={() => this.postSelectedhandler(post.id)}
+                    key={post.id}
+                    title={post.title}
+                    author={post.author}
+                />
+            })
+        }
         return (
             <div>
                 <section className="Posts">
                     {posts}
                 </section>
                 <section>
-                    <FullPost />
+                    <FullPost id={this.state.selectedPostId} />
                 </section>
                 <section>
                     <NewPost />
