@@ -1032,6 +1032,33 @@ in the NewPost.js at post button, add onClick={this.postDataHandler}
 
 168. Sending a DELETE Request 
 in the FullPost.js
-add deletePostHandler
-170. Handling Errors Locally 
-in Blog.js axios.get, add .catch method after .then method. 
+add deletePostHandler = () =>{
+  axios.delete("url"+ postid)
+  .then(response => {
+    console.log(response)
+  })
+}
+171. Handling Errors Locally 
+add state error.
+in Blog.js axios.get, add .catch method after .then method.
+in render()
+add  let posts = <p style={{ textAlign: 'center' }}>Something went wrong</p>
+if (!this.state.error) { return post 
+172. adding interceptors to Execute Code Globally. 
+index.js file b/c the most global file
+import axios from 'axios'
+axios.interceptors.request.use((request)=>{
+    return request
+}, error => {
+  return Promise.reject(error)
+}) // will affect globally 
+
+make sure when use interceptors at global index level.  
+ALWAYS RETURNS REQUEST. because interceptors blocked it. 
+added error and return Promise.reject(error) to handle error globally.
+
+173. Removing interceptors
+axios.interceptors.request.eject(myInterceptor)
+
+174. Setting a Default Global Configuration for Axios 
+default url globally 
