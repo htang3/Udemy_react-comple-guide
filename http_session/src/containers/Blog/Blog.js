@@ -4,7 +4,8 @@ import Post from "../../components/Post/Post";
 import FullPost from "../../components/FullPost/FullPost";
 import NewPost from "../../components/NewPost/NewPost";
 import "./Blog.css";
-import axios from "axios";
+import axios from "../../axios";
+
 class Blog extends Component {
   constructor(props) {
     super(props);

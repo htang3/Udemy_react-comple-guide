@@ -1061,4 +1061,22 @@ added error and return Promise.reject(error) to handle error globally.
 axios.interceptors.request.eject(myInterceptor)
 
 174. Setting a Default Global Configuration for Axios 
-default url globally 
+default url globally, and defaults headers globally
+index.js
+axios.defaults.baseUrl
+axios.defaults.headers.common['Authorization'] = "AUTH TOKEN"
+
+175. Create and using Axios instance
+when you don't want to use the same base url, in other part of application you want to use modified URl 
+create axios.js 
+import axios from "axios";
+
+const instance = axios.create({
+  baseURL: "https://jsonplaceholder.typicode.com/",
+});
+instance.headers.common["Authorization"] = "AUTH TOKEN";
+
+export default instance;
+
+import to other component
+import axios from "../../axios";
