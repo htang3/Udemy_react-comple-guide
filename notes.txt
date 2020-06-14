@@ -1127,5 +1127,255 @@ first element is current state .
 
 429. More On useState() and state updating.
 However, the onChange affect the new State because the way it set up
-only the title change, Hooks want both title and amount
+only the title change, Hooks wants both title and amount
 When we update the state, we need to ensure we don't lose any old data. 
+onChange={(event) =>
+  inputState[1]({
+    title: inputState[0].title,
+    amount: event.target.value,
+  })
+}
+solutions: add the original state of other property. 
+In some case, when there're a lots going on on the web, 
+React decides to defer a state update (RARE).
+inputState[1] can be alternative by passing anonamous function into inputState. 
+
+onChange={event => 
+  inputState[1]((prevState)=> ({ //replace the inputState[0] with prevState
+  title: event.target.value,
+  amount: prevState.amount
+}))
+
+However,new problem now is closure, when event try to access event of outer function.
+Therefore, we create new variable of new inputs (title and amount) 
+onChange={event=> {
+  const newTitle = event.target.value;
+  inputState[1](prevState => ({
+    title: newTitle,
+    amount: prevState.amount
+  }))
+}}
+
+430. Array Destructuring
+instead of using inputState only, we use destructuring data
+const [inputState, setInputState]= useState({title: '', amount: ''});
+<Input value={inputState.amount}
+      onChange={event =>{
+        replace inputState[1] with setInputState(prevState=> ({
+
+        }))
+      }
+
+      }
+/>
+
+431. Multiple States
+image when we have multiple property not just amount and title,
+ it's exhausted to update. 
+in class-based Components: State has to be an object and react automatically merge state for you. 
+in functional Components: state does not have to be an object and react does not automatically merge. 
+we can register multiple state. 
+in IngredientForm.js 
+const [enteredTitle, setEnteredTitle]= useState("");
+const [enteredAmount, setEnteredAmount]= useState("");
+change the input component to 
+<input
+    type="text"
+    id="title"
+    value={enteredTitle}
+    onChange={(event) => {
+      setEnteredTitle(event.target.value);
+    }}
+}
+432. Rules of Hooks 
+1/ must only use in functional comp 
+2/ use Hooks on the roots, top of the component.
+3/ Dont use in if statement, or forloop. 
+
+433. Passing state Data Across Component. 
+Ingredients.js 
+const [userIngredient, setUserIngredient] = useState([]);
+const addIngredienthandler = ingredient => {
+  setUserIngredient(prevIngredient => [
+    //use spread operator to get all previous ingredient
+    ...prevIngredients,
+    {
+      id: Math.random().toString();
+      ... ingredient //new ingredient
+    }
+
+  ])
+}
+deleteIngredientHandler = (id)=> {
+  setUserIngredient= (prevIngredient) => {
+    prevIngredient.filter((ingredient) => ingredient.id != id)
+  }
+}
+in return(
+  <IngredientForm 
+  onAddIngredient = {addIngredienthandler }/>
+  <IngredientList 
+  ingredients = {userIngredient}
+  onremoveItem = {deleteIngredientHandler}
+  />
+
+  
+)
+
+434. Sending Http Requests using Firebase**********
+1. Create a new project reactHooksection
+2. in addIngredienthandler 
+fetch("https://reacthooksection.firebaseio.com/ingredients.json", {
+  method: "POST",
+  // JSON.stringify convert JS value to JSON format
+  body: JSON.stringify(ig),
+  headers: { "Content-Type": "application/json" },
+})
+//promise return a response, return response.json.
+  .then((response) => {
+    //response.json will convert json data to regular value.
+    return response.json();
+  })
+  //another promise get the response data
+  .then((responseData) => {
+    setUserIngredients((prevIngredient) => [
+      ...prevIngredient,
+      {
+        //because of firebase use name to differentiate data
+        id: responseData.name,
+        ...ig,
+      },
+    ]);
+  });
+However, as soon as we reload all the data was lost. 
+need to HOOks similar to ComponentDidMount
+435. useEffect() & Loading Data 
+For above purpose, we use useEffect()
+useEffect(() => {
+  fetch("https://reacthooksection.firebaseio.com/ingredients.json")
+    .then((response) => response.json())
+    .then((responseData) => {
+      const loadedData = [];
+      for (const key in responseData) {
+        loadedData.push({
+          id: key,
+          title: responseData[key].title,
+          amount: responseData[key].amount,
+        });
+      }
+    });
+}, []);
+// use empty array to stop rendering, it only renders when necessary. 
+436. Understanding useEffect() Dependencies 
+useEffect(() => {
+  console.log("Rendering", userIngredients);
+}, [userIngredients]);
+
+437. More on useEffect() FILTER FEATURE STARTS HERE****
+go to Search.js
+//use object destructuring because function is object, extract onLoadIngredients
+const { onLoadIngredients } = props;
+const [enteredFilter, setEnteredFilter] = useState("");
+//useEffect will execute AFTER user enter something in Search
+useEffect(() => {
+  const query =
+    enteredFilter.length === 0
+      ? ""
+      : `?orderBy="title"&equalTo="${enteredFilter}"`;
+  fetch("https://reacthooksection.firebaseio.com/ingredients.json" + query)
+    .then((response) => response.json())
+    .then((responseData) => {
+      const loadedIngredients = [];
+      for (const key in responseData) {
+        loadedIngredients.push({
+          id: key,
+          title: responseData[key].title,
+          amount: responseData[key].amount,
+        });
+      }
+      //props.onLoadIngredients(loadedIngredients)
+      //we have props as a dependency, however, if we pass props into second arguments array,
+      //component will change whenever something change to props
+      //therefore, we we want to pass onLoadIngredients
+      //to do it, use OBject destructuring above with props.
+      onLoadIngredients(loadedIngredients);
+    });
+}, [enteredFilter, onLoadIngredients]);
+go to firesebase reacthooksection, to change the rules of database
+"ingredients": {
+  ".indexOn" : ["title"]
+}
+Remember to publish
+
+438. What's useCallback()?
+However Search.js caused infinite loop because onLoadIngredients in second argument array.
+because in Ingredients.js, when component render, filteredIngredient load,
+inside filteredIngredient load function, there are setUserIngredient which cause render.
+Solutions: useCallback to wrap filteredIngredients.  
+const filteredIngredientsHandler = useCallback((filteredIngredients) => {
+  setUserIngredients(filteredIngredients);
+}, []);
+ useCallback will return a memoized version of the callback, that only changes when one of dependency changes.
+ This is useful when passing callbacks to optimized child components that rely on reference equality to prevent unnecessary renders
+ it work like shouldComponentUpdate
+439. Working with Refs & useRefs
+in Search.js, we sent req for every key stroke, we should set a timer for it
+For the input, we set a timer.
+import useRef from 'react-hook'
+const inputRef = useRef()
+in useEffect(()=> {
+  setTimeout(()=> {
+    if (enteredFilter === inputRef.current.value){
+      const query...
+    }
+  }, 500)
+}, [enteredFilter, onLoadIngredients, inputRef])
+<Input 
+  ref = {inputRef}
+>
+
+in setTimeout, we need to check whether enteredFilter === current value. for that we need to useRef
+useRef is like a "box" that can hold a mutable value in its .current property. 
+useRef() creates a plain JS object. useRef() give you the same ref object on every render.
+useRef() does not cause re-render.
+
+440. Cleaning up with useEffect() FILTER ENDS HERE************
+instead of setting timer for every key stroke. we want to clean up timer. 
+const timer = setTimeout()
+
+useEffect return a function 
+To clearn up after  timer ,500);
+return () => {
+  clearTimeout(timer);
+};
+It will clear old timer when useEffect execute NEXT time.
+441. Deleting Ingredients
+in removeIngredientHandler, use `${ingredients}` in the url update
+fetch(
+  `https://reacthooksection.firebaseio.com/ingredients/${ingredientId}.json`,
+  {
+    method: "DELETE",
+  }
+).then((response) => {
+  setUserIngredients((prevIngredients) =>
+    prevIngredients.filter((ingredient) => ingredient.id !== ingredientId)
+  );
+});
+442. Loading error and State Batching 
+Ingredients.js add new useState
+const [isLoading, setIsLoading] = useState(false);
+
+<IngredientForm
+onAddIngredient={addIngredientHandler}
+loading={isLoading}
+
+in useEffect((ingredient) => {
+  //before fetch 
+  setIsLoading(true)
+  //in the first Promise, setIsLoading(false)
+})
+in IngredientForm
+import LoadingIndicator from "../UI/LoadingIndicator"
+after the submit button
+{props.loading ? <LoadingIndicator/>: null}
+However, now when we delete, the LoadingIndicator keep spinning 

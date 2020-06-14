@@ -1,15 +1,21 @@
 import React, { useState } from "react";
-
+import LoadingIndicator from "../UI/LoadingIndicator";
 import Card from "../UI/Card";
 import "./IngredientForm.css";
 
 const IngredientForm = React.memo((props) => {
   //param can object, array...,etc always return array of element
-  const inputState = useState({ title: "", amount: "" });
-
+  //const [inputState, setInputState] = useState({ title: "", amount: "" });
+  //array destructuring
+  const [enteredTitle, setEnteredTitle] = useState("");
+  const [enteredAmount, setEnteredAmount] = useState("");
   const submitHandler = (event) => {
     event.preventDefault();
     // ...
+    props.onAddIngredient({
+      title: enteredTitle,
+      amount: enteredAmount,
+    });
   };
 
   return (
@@ -21,13 +27,10 @@ const IngredientForm = React.memo((props) => {
             <input
               type="text"
               id="title"
-              value={inputState[0].title}
-              onChange={(event) =>
-                inputState[1]({
-                  title: event.target.value,
-                  amount: inputState[0].amount,
-                })
-              }
+              value={enteredTitle}
+              onChange={(event) => {
+                setEnteredTitle(event.target.value);
+              }}
             />
           </div>
           <div className="form-control">
@@ -35,17 +38,16 @@ const IngredientForm = React.memo((props) => {
             <input
               type="number"
               id="amount"
-              value={inputState[0].amount}
-              onChange={(event) =>
-                inputState[1]({
-                  title: inputState[0].title,
-                  amount: event.target.value,
-                })
-              }
+              value={enteredAmount}
+              onChange={(event) => {
+                setEnteredAmount(event.target.value);
+              }}
             />
           </div>
           <div className="ingredient-form__actions">
             <button type="submit">Add Ingredient</button>
+            {/* line below can be replaced props.loading && <LoadingIndicator/> */}
+            {props.loading ? <LoadingIndicator /> : null}
           </div>
         </form>
       </Card>
