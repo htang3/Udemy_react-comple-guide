@@ -1370,7 +1370,7 @@ onAddIngredient={addIngredientHandler}
 loading={isLoading}
 
 in useEffect((ingredient) => {
-  //before fetch 
+  //before fetch in addIngredientHandler
   setIsLoading(true)
   //in the first Promise, setIsLoading(false)
 })
@@ -1378,4 +1378,237 @@ in IngredientForm
 import LoadingIndicator from "../UI/LoadingIndicator"
 after the submit button
 {props.loading ? <LoadingIndicator/>: null}
+add isLoading into catch {
+  setError("Something went wrong");
+  isLoading
+} of removeIngredientHandler
 However, now when we delete, the LoadingIndicator keep spinning 
+ 434. More on State Batching & State Updates
+This means setError and isLoading above in the same synchronous execution cycle will only
+re-render ONCE and BOTH state updates will be applied simultaneously. 
+
+The new state value is only available in the next component render cycle. 
+
+444. Understanding useReducer()
+in ingredients.js 
+userIngredient, isLoading, error closely related. 
+useReducer(): takes some input and return some output. An alternative to useState
+useReducer(state, action) => newState, and returns current state paired with a dispatch method. 
+useReducer is preferable when you have complex state logic and next state depends on the previous one. 
+const ingredientReducer = (currentIngredients, action) => {
+  switch (action.type) {
+    case "SET":
+      return action.ingredients;
+    case "ADD":
+      return [...currentIngredients, action.ingredient];
+    case "DELETE":
+      return currentIngredients.filter((ing) => ing.id !== action.id);
+    default:
+      throw new Error("Should not get there!");
+  }
+};
+
+const ingredients =()=> {
+  const [userIngredients, dispatch] = useReducer(ingredientReducer, []);
+}
+
+in each method, replace Each setNewState with dispatch
+make sure the property you set same as the action.property in ingredientReducer
+
+445. useReducer for http State 
+const httpReducer = (currhttpState, action) => {
+  switch (action.type) {
+    case "SEND":
+      return { loading: true, error: null };
+    case "RESPONSE":
+      return { ...currhttpState, loading: false };
+    case "ERROR":
+      return { loading: false, error: action.errorData };
+    case "CLEAR":
+      return { ...currhttpState, error: null };
+    default:
+      throw new Error("shold not be reached");
+  }
+};
+
+const [httpState, dispatchHTTP] = useReducer(httpReducer, {
+  loading: false,
+  error: null,
+});
+
+add dispatchHTTP in each functions 
+
+446. Working with useContext()
+create new folder context/context.js
+export const AuthContext = React.createContext({
+  isAuth: false,
+  login: () => {},
+});
+
+const AuthContextProvider= (props) => {
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const loginHandler = ()=> {
+    setIsAuthenticated(true);
+  }
+}
+return <AuthContext.Provider value = {{login: loginHandler, isAuth: isAuthenticated}}>
+  {props.children}
+</ AuthContext.Provider>
+
+in index.js 
+<AuthContextProvider>
+<App/>
+</AuthContextProvider>
+
+in App.js
+import {AuthContext} from '../context/context'
+
+const authContext = useContext(AuthContext); 
+let content = <Auth/>
+if (authContext.isAuth){
+  content = <Ingredients>
+}
+return content; 
+
+in Auth.js 
+import {AuthContext} from '../context/context'
+const authContext = useContext(AuthContext);
+const loginHandler = () => {
+  authContext.login();
+};
+
+
+
+447. Performance with useMemo()
+Once the data get fetched from firebase, it also render the form 
+This is not what we want, if we just want it rerender whenever we type. 
+we can get rid of unnecessary rerender 
+useCallback(ingredient) for addIngredientHandler, add [] at the end of callback. 
+
+ingredientList, useCallback() for removeIngredientHandler, add []
+in ingredientList, use React.memo(props)=> {}
+
+useCallback: was a hook to save a function that doesn't change. 
+useMemo: is a hook where you can save a value which is saved 
+so that the value isn't created on every rerender. 
+in ingredients.js 
+
+before return 
+const ingredientList = useMemo(() => {
+  return (
+    <IngredientList
+      ingredients={userIngredients}
+      onRemoveItem={removeIngredientHandler}
+    />
+  );
+}, [userIngredients, removeIngredientHandler]);
+
+return(
+  ...
+  {ingredientList}
+)
+
+RE-RENDER happens in the virtual DOM 
+
+448. Started with Custom hook 
+add hook/http.js
+const httpReducer = (currhttpState, action) => {
+  switch (action.type) {
+    case "SEND":
+      return { loading: true, error: null, data: null, extra: action.data };
+    case "RESPONSE":
+      return { ...currhttpState, loading: false, data: action.response };
+    case "ERROR":
+      return { loading: false, error: action.errorData };
+    case "CLEAR":
+      return { ...currhttpState, error: null };
+    default:
+      throw new Error("shold not be reached");
+  }
+};
+httpReducer puts outside so, it won't be rerendered. 
+
+const useSomething = ()=> {
+  const [httpState, dispatchHTTP] = useReducer(httpReducer, {
+    loading: false,
+    error: null,
+    data: null,
+    extra: null,
+  });
+  //sendRequest function actually sends the request.
+  //wrap sendRequest with useCallback for unnecessary re-render 
+  const sendRequest = useCallback((url, method, body, reqExtra) => {
+    dispatchHTTP({ type: "SEND", extra: reqExtra });
+    fetch(url, {
+      method: method,
+      body: body,
+      headers: {
+        "Content-Type": "application/json",
+      },
+    })
+      .then((response) => {
+        return response.json();
+      })
+      .then((responseData) => {
+        dispatchHTTP({ type: "RESPONSE", response: responseData });
+      })
+      .catch((error) => {
+        // by default each error has message property
+        // setError("Something went wrong");
+        // setIsLoading(false);
+        dispatchHTTP({
+          type: "ERROR",
+          errorData: error.message,
+        });
+      });
+  }, []);
+
+  return {
+    isLoading: httpState.loading,
+    data: httpState.data,
+    error: httpState.error,
+    sendRequest: sendRequest, //return a handle for sendRequest
+    reqExtra: httpState.extra,
+  };
+}
+export default useSomething
+
+in ingredients.js import useSomething from '../../hooks/http'
+ const {isLoading,data, error, sendRequest, reqExtra} = useSomething()
+
+ in removeIngredientHandler= (ingredientId)=> {
+   sendRequest(`url/${ingredientId}`, 
+   DELETE,
+  )
+ }
+
+ when we click removeIngredientHandler, 
+ we are NOT updating the ingredient  
+
+ 449. Sharing data between Custom Hooks & Components
+useEffect to update the ingredients. 
+//sharing data
+useEffect(() => {
+  dispatch({ type: "DELETE", id: reqExtra });
+}, [data, reqExtra]);
+
+*** Initially, this useEffect know nothing about id. 
+in useHttp, add extra: null and add extra into 'SEND' request 
+in sendRequest, add reqExtra as a parameter. 
+dispatchHTTP extra: reqExtra 
+
+in ingredients.js, removeIngredientHandler, sendRequest ( 
+  ...
+  ingredientId  as an extra
+)
+
+in return at the end of http.js 
+reqExtra: httpState.extra
+
+this goes back to the useEffect above,
+ we can provide id: reqExtra
+
+add identifier to the parameter, in 'SEND'
+
+450. use Custom Hook in Search.js 
+

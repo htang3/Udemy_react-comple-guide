@@ -7,6 +7,7 @@ const IngredientForm = React.memo((props) => {
   //param can object, array...,etc always return array of element
   //const [inputState, setInputState] = useState({ title: "", amount: "" });
   //array destructuring
+  console.log("Form rerendering...");
   const [enteredTitle, setEnteredTitle] = useState("");
   const [enteredAmount, setEnteredAmount] = useState("");
   const submitHandler = (event) => {
@@ -16,6 +17,8 @@ const IngredientForm = React.memo((props) => {
       title: enteredTitle,
       amount: enteredAmount,
     });
+    setEnteredAmount("");
+    setEnteredTitle("");
   };
 
   return (
